@@ -45,6 +45,12 @@ class APIKey(models.Model):
         ),
     )
     revoked = models.BooleanField(blank=True, default=False)
+    scopes = models.ManyToManyField(
+        "Scope",
+        blank=True,
+        related_name="keys",
+        help_text="A list of service scope for this api key."
+    )
 
     class Meta:  # noqa
         ordering = ("-created",)
@@ -76,3 +82,18 @@ class APIKey(models.Model):
     def __str__(self):
         """Represent by the client ID."""
         return str(self.client_id)
+
+
+class Scope(models.Model):
+    """Represent a token scope"""
+    name = models.CharField(
+        max_length=64,
+        unique=True
+    )
+    description = models.TextField(
+        null=True,
+        blank=True,
+    )
+
+    def __str__(self):
+        return self.name
