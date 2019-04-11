@@ -20,7 +20,7 @@ class APIKeyBasePermission(permissions.BasePermission):
 
         # Token and secret key must have been given
         if not token or not secret_key:
-            return False
+            return None
 
         # Retrieve not revoked key and verified APIKey with given token and secret key.
         api_key = get_api_key(token, secret_key)
