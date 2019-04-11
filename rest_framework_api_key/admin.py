@@ -1,7 +1,7 @@
 """rest_framework_api_key administration panel."""
 
 from django.contrib import admin, messages
-from .models import APIKey
+from .models import APIKey, Scope
 from .crypto import assign_token
 
 
@@ -23,7 +23,9 @@ class APIKeyAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("client_id", "revoked")}),
         ("Credentials", {"fields": ("token", "secret_key_message")}),
+        ("Scope", {"fields": ("scopes", )})
     )
+    filter_horizontal = ('scopes',)
 
     def get_readonly_fields(self, request, obj=None):
         """Set revoked as read-only if the API key has been revoked."""
@@ -52,3 +54,8 @@ class APIKeyAdmin(admin.ModelAdmin):
         else:
             # Save as usual
             obj.save()
+
+
+@admin.register(Scope)
+class ScopeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
