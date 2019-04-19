@@ -7,7 +7,7 @@ from .crypto import assign_token
 
 _SECRET = 16 * "*"
 _SECRET_KEY_MESSAGE = (
-    "The secret key for {client_id} is: {secret_key}. "
+    "The key for {client_id} is: {token} : {secret_key}. "
     "Please note it down: you will not be able to see it again."
 )
 
@@ -16,7 +16,7 @@ _SECRET_KEY_MESSAGE = (
 class APIKeyAdmin(admin.ModelAdmin):
     """Admin panel for API keys."""
 
-    list_display = ("client_id", "created", "revoked")
+    list_display = ("client_id", "token", "created", "revoked")
     list_filter = ("created", "revoked")
     readonly_fields = ("token", "secret_key_message")
     search_fields = ("id", "client_id")
@@ -48,7 +48,7 @@ class APIKeyAdmin(admin.ModelAdmin):
             secret_key = assign_token(obj)
             obj.save()
             message = _SECRET_KEY_MESSAGE.format(
-                client_id=obj.client_id, secret_key=secret_key
+                client_id=obj.client_id, token=obj.token, secret_key=secret_key
             )
             messages.add_message(request, messages.WARNING, message)
         else:
